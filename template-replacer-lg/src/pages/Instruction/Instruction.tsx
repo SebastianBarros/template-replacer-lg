@@ -35,11 +35,7 @@ export const Instruction = () => {
     valorCuotaParte: "",
     date: "",
   });
-  const [replacedInstruction, setReplacedInstruction] = useState("");
-
-  useEffect(() => {
-    setReplacedInstruction(instructionText);
-  }, [instructionText]);
+  const [replacedInstruction, setReplacedInstruction] = useState(instructionText);
 
   useEffect(() => {
     let auxText = instructionText;
