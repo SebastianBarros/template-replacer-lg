@@ -8,7 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetTextFromFile } from "@/hooks/useGetTextFromFile";
 import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -23,10 +22,9 @@ const keyReplaceMap = new Map([
   ["date", "FECHA"],
 ]);
 
+import instructionText from '../../../public/instruction.txt?raw'
+
 export const Instruction = () => {
-  const instructionText = useGetTextFromFile(
-    "./src/pages/Instruction/instruction.txt"
-  );
   const [params, setParams] = useState({
     cuotasPartes: "",
     clase: "",
