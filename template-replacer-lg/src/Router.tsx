@@ -4,7 +4,7 @@ import { routes } from "./routes";
 
 export const Router = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/template-replacer-lg/">
       <Routes>
         <Route path={routes.home} element={<Home />}/>
         <Route path={routes.instructions} element={<Instruction />} />
