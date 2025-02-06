@@ -48,7 +48,7 @@ export const Instruction = () => {
     if (params.valorCuotaParte && params.importeEmbargo) {
       auxText = auxText.replace(
         "[CUOTASPARTES A BLOQUEAR]",
-        (+params.importeEmbargo / +params.valorCuotaParte).toFixed(2)
+        (+params.importeEmbargo / +params.valorCuotaParte).toFixed(4)
       );
     }
     setReplacedInstruction(auxText);
@@ -78,15 +78,15 @@ export const Instruction = () => {
 
   if (!instructionText) return null;
   return (
-    <div className="py-20 px-10">
-      <h1 className="font-bold text-2xl">Instruction</h1>
+    <div className="px-10 py-20">
+      <h1 className="text-2xl font-bold">Instruction</h1>
       <p>
         Fill the fields, when ready, click on the clipboard icon to have it
         copied to your clipboard
       </p>
 
       <div className="grid grid-cols-2 gap-x-16">
-        <div className="col-span-1 grid grid-cols-2 gap-x-4 mt-4">
+        <div className="grid grid-cols-2 col-span-1 mt-4 gap-x-4">
           <div className="grid-col-span-1">
             <Label title="Cuotas Partes" />
             <Input
@@ -170,7 +170,7 @@ export const Instruction = () => {
           </div>
         </div>
         <div className="col-span-1">
-          <div className="p-4 bg-white relative">
+          <div className="relative p-4 bg-white">
             <div className="absolute top-0 right-2">
               <Copy className="cursor-pointer" onClick={onCopy} />
             </div>
@@ -178,7 +178,7 @@ export const Instruction = () => {
           </div>
         </div>
       </div>
-      <Button className="bg-blue-600 rounded-xl text-white" onClick={onReset}>Reset</Button>
+      <Button className="text-white bg-blue-600 rounded-xl" onClick={onReset}>Reset</Button>
     </div>
   );
 };
