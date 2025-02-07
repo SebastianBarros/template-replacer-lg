@@ -37,6 +37,7 @@ const keyReplaceMap = new Map<tInstructionKeys, string>([
   [instructionKeys.importeEmbargo, "IMPORTE DE EMBARGO"],
   [instructionKeys.valorCuotaParte, "VALOR DE CUOTAPARTE"],
   [instructionKeys.date, "FECHA"],
+  [instructionKeys.rate, "VALO DE COT"]
 ]);
 
 const valueTransform = new Map<
@@ -95,6 +96,9 @@ export const Instruction = () => {
             (+params.valorCuotaParte * (+params.rate || 1)),
         })
       );
+    }
+    if (!params?.rate) {
+      auxText = auxText.replace("COTIZACION: [VALO DE COT]", '')
     }
     setReplacedInstruction(auxText);
   }, [params]);

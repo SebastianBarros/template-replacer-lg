@@ -3,5 +3,6 @@ Muy buenos días/buenas tardes, favor de proceder a BLOQUEAR la cantidad de [N°
 
 Cálculo: [IMPORTE DE EMBARGO] / [VALOR DE CUOTAPARTE] = [CUOTASPARTES A BLOQUEAR]
 VCP al [FECHA] : [VALOR DE CUOTAPARTE]
+COTIZACION: [VALO DE COT]
 Desde ya, muchas gracias.
 Saludos
