@@ -23,6 +23,7 @@ const instructionKeys = {
   importeEmbargo: "importeEmbargo",
   valorCuotaParte: "valorCuotaParte",
   date: "date",
+  rate: "rate",
 } as const;
 
 type tInstructionKeys = keyof typeof instructionKeys;
@@ -40,7 +41,10 @@ const keyReplaceMap = new Map<tInstructionKeys, string>([
 
 const valueTransform = new Map<
   tInstructionKeys,
-  (value: string | number) => string
+  (
+    value: string | number,
+    rest: Record<tInstructionKeys, string | number>
+  ) => string
 >([
   [
     instructionKeys.importeEmbargo,
@@ -48,7 +52,8 @@ const valueTransform = new Map<
   ],
   [
     instructionKeys.valorCuotaParte,
-    (value) => amountNumberFormatter({ amount: +value }),
+    (value, rest) =>
+      amountNumberFormatter({ amount: +value * (+rest.rate || 1) }),
   ],
 ]);
 
@@ -62,6 +67,7 @@ export const Instruction = () => {
     [instructionKeys.importeEmbargo]: "",
     [instructionKeys.valorCuotaParte]: "",
     [instructionKeys.date]: "",
+    [instructionKeys.rate]: "",
   });
   const [replacedInstruction, setReplacedInstruction] =
     useState(instructionText);
@@ -70,10 +76,13 @@ export const Instruction = () => {
     let auxText = instructionText;
     for (const [key, value] of Object.entries(params)) {
       if (value) {
-        const regex = new RegExp(`\\[${keyReplaceMap.get(key as tInstructionKeys)}\\]`, "g");
+        const regex = new RegExp(
+          `\\[${keyReplaceMap.get(key as tInstructionKeys)}\\]`,
+          "g"
+        );
         auxText = auxText.replace(
           regex,
-          valueTransform.get(key as tInstructionKeys)?.(value) || value
+          valueTransform.get(key as tInstructionKeys)?.(value, params) || value
         );
       }
     }
@@ -81,14 +90,16 @@ export const Instruction = () => {
       auxText = auxText.replace(
         "[CUOTASPARTES A BLOQUEAR]",
         amountNumberFormatter({
-          amount: +params.importeEmbargo / +params.valorCuotaParte,
+          amount:
+            +params.importeEmbargo /
+            (+params.valorCuotaParte * (+params.rate || 1)),
         })
       );
     }
     setReplacedInstruction(auxText);
   }, [params]);
 
-  const onParamsChange = (key: keyof typeof params, value: string) => {
+  const onParamsChange = (key: tInstructionKeys, value: string) => {
     setParams(() => ({ ...params, [key]: value }));
   };
 
@@ -102,6 +113,7 @@ export const Instruction = () => {
       [instructionKeys.importeEmbargo]: "",
       [instructionKeys.valorCuotaParte]: "",
       [instructionKeys.date]: "",
+      [instructionKeys.rate]: "",
     });
     setReplacedInstruction(instructionText);
   };
@@ -125,14 +137,18 @@ export const Instruction = () => {
             <Label title="Cuotas Partes" />
             <Input
               placeholder="Cuotas Partes"
-              onChange={(ev) => onParamsChange("cuotasPartes", ev.target.value)}
+              onChange={(ev) =>
+                onParamsChange(instructionKeys.cuotasPartes, ev.target.value)
+              }
               value={params.cuotasPartes}
             />
           </div>
           <div className="grid-col-span-1">
             <Label title="Clase" />
             <Select
-              onValueChange={(value) => onParamsChange("clase", value)}
+              onValueChange={(value) =>
+                onParamsChange(instructionKeys.clase, value)
+              }
               value={params.clase}
             >
               <SelectTrigger>
@@ -150,7 +166,9 @@ export const Instruction = () => {
             <Label title="FCI" />
             <Input
               placeholder="FCI"
-              onChange={(ev) => onParamsChange("FCI", ev.target.value)}
+              onChange={(ev) =>
+                onParamsChange(instructionKeys.FCI, ev.target.value)
+              }
               value={params.FCI}
             />
           </div>
@@ -159,7 +177,10 @@ export const Instruction = () => {
             <Input
               placeholder="Nombre y apellido"
               onChange={(ev) =>
-                onParamsChange("cuotaPartistaApyn", ev.target.value)
+                onParamsChange(
+                  instructionKeys.cuotaPartistaApyn,
+                  ev.target.value
+                )
               }
               value={params.cuotaPartistaApyn}
             />
@@ -168,7 +189,9 @@ export const Instruction = () => {
             <Label title="CUIT" />
             <Input
               placeholder="CUIT"
-              onChange={(ev) => onParamsChange("cuit", ev.target.value)}
+              onChange={(ev) =>
+                onParamsChange(instructionKeys.cuit, ev.target.value)
+              }
               value={params.cuit}
             />
           </div>
@@ -178,7 +201,7 @@ export const Instruction = () => {
               type="number"
               placeholder="Importe de embargo"
               onChange={(ev) =>
-                onParamsChange("importeEmbargo", ev.target.value)
+                onParamsChange(instructionKeys.importeEmbargo, ev.target.value)
               }
               value={params.importeEmbargo}
             />
@@ -189,16 +212,29 @@ export const Instruction = () => {
               type="number"
               placeholder="Valor de cuota parte"
               onChange={(ev) =>
-                onParamsChange("valorCuotaParte", ev.target.value)
+                onParamsChange(instructionKeys.valorCuotaParte, ev.target.value)
               }
               value={params.valorCuotaParte}
+            />
+          </div>
+          <div className="grid-col-span-1">
+            <Label title="Rate" />
+            <Input
+              type="number"
+              placeholder="Rate"
+              onChange={(ev) =>
+                onParamsChange(instructionKeys.rate, ev.target.value)
+              }
+              value={params.rate}
             />
           </div>
           <div className="grid-col-span-1">
             <Label title="Fehca" />
             <Input
               placeholder="Fecha"
-              onChange={(ev) => onParamsChange("date", ev.target.value)}
+              onChange={(ev) =>
+                onParamsChange(instructionKeys.date, ev.target.value)
+              }
               value={params.date}
             />
           </div>
