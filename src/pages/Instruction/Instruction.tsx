@@ -11,48 +11,82 @@ import {
 import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const keyReplaceMap = new Map([
-  ["cuotasPartes", "N° CUOTASPARTES"],
-  ["clase", "CLASE A,B,C,D"],
-  ["FCI", "NOMBRE DEL FCI"],
-  ["cuotaPartistaApyn", "NOMBRE Y APELLIDO DEL CUOTAPARTISTA"],
-  ["cuit", "N° DE CUIT"],
-  ["importeEmbargo", "IMPORTE DE EMBARGO"],
-  ["valorCuotaParte", "VALOR DE CUOTAPARTE"],
-  ["date", "FECHA"],
+const instructionKeys = {
+  cuotasPartes: "cuotasPartes",
+  clase: "clase",
+  FCI: "FCI",
+  cuotaPartistaApyn: "cuotaPartistaApyn",
+  cuit: "cuit",
+  importeEmbargo: "importeEmbargo",
+  valorCuotaParte: "valorCuotaParte",
+  date: "date",
+} as const;
+
+type tInstructionKeys = keyof typeof instructionKeys;
+
+const keyReplaceMap = new Map<tInstructionKeys, string>([
+  [instructionKeys.cuotasPartes, "N° CUOTASPARTES"],
+  [instructionKeys.clase, "CLASE A,B,C,D"],
+  [instructionKeys.FCI, "NOMBRE DEL FCI"],
+  [instructionKeys.cuotaPartistaApyn, "NOMBRE Y APELLIDO DEL CUOTAPARTISTA"],
+  [instructionKeys.cuit, "N° DE CUIT"],
+  [instructionKeys.importeEmbargo, "IMPORTE DE EMBARGO"],
+  [instructionKeys.valorCuotaParte, "VALOR DE CUOTAPARTE"],
+  [instructionKeys.date, "FECHA"],
 ]);
 
-import instructionText from '../../../public/instruction.txt?raw'
+const valueTransform = new Map<
+  tInstructionKeys,
+  (value: string | number) => string
+>([
+  [
+    instructionKeys.importeEmbargo,
+    (value) => amountNumberFormatter({ amount: +value }),
+  ],
+  [
+    instructionKeys.valorCuotaParte,
+    (value) => amountNumberFormatter({ amount: +value }),
+  ],
+]);
+
+import instructionText from "../../../public/instruction.txt?raw";
+import { amountNumberFormatter } from "@/utils/amountFormatter";
 
 export const Instruction = () => {
   const [params, setParams] = useState({
-    cuotasPartes: "",
-    clase: "",
-    FCI: "",
-    cuotaPartistaApyn: "",
-    cuit: "",
-    importeEmbargo: "",
-    valorCuotaParte: "",
-    date: "",
+    [instructionKeys.cuotasPartes]: "",
+    [instructionKeys.clase]: "",
+    [instructionKeys.FCI]: "",
+    [instructionKeys.cuotaPartistaApyn]: "",
+    [instructionKeys.cuit]: "",
+    [instructionKeys.importeEmbargo]: "",
+    [instructionKeys.valorCuotaParte]: "",
+    [instructionKeys.date]: "",
   });
-  const [replacedInstruction, setReplacedInstruction] = useState(instructionText);
+  const [replacedInstruction, setReplacedInstruction] =
+    useState(instructionText);
 
   useEffect(() => {
     let auxText = instructionText;
     for (const [key, value] of Object.entries(params)) {
       if (value) {
-        const regex = new RegExp(`\\[${keyReplaceMap.get(key)}\\]`, "g");
-        auxText = auxText.replace(regex, value);
+        const regex = new RegExp(`\\[${keyReplaceMap.get(key as tInstructionKeys)}\\]`, "g");
+        auxText = auxText.replace(
+          regex,
+          valueTransform.get(key as tInstructionKeys)?.(value) || value
+        );
       }
     }
     if (params.valorCuotaParte && params.importeEmbargo) {
       auxText = auxText.replace(
         "[CUOTASPARTES A BLOQUEAR]",
-        (+params.importeEmbargo / +params.valorCuotaParte).toFixed(4)
+        amountNumberFormatter({
+          amount: +params.importeEmbargo / +params.valorCuotaParte,
+        })
       );
     }
     setReplacedInstruction(auxText);
-  }, [params, instructionText]);
+  }, [params]);
 
   const onParamsChange = (key: keyof typeof params, value: string) => {
     setParams(() => ({ ...params, [key]: value }));
@@ -60,14 +94,14 @@ export const Instruction = () => {
 
   const onReset = () => {
     setParams({
-      cuotasPartes: "",
-      clase: "",
-      FCI: "",
-      cuotaPartistaApyn: "",
-      cuit: "",
-      importeEmbargo: "",
-      valorCuotaParte: "",
-      date: "",
+      [instructionKeys.cuotasPartes]: "",
+      [instructionKeys.clase]: "",
+      [instructionKeys.FCI]: "",
+      [instructionKeys.cuotaPartistaApyn]: "",
+      [instructionKeys.cuit]: "",
+      [instructionKeys.importeEmbargo]: "",
+      [instructionKeys.valorCuotaParte]: "",
+      [instructionKeys.date]: "",
     });
     setReplacedInstruction(instructionText);
   };
@@ -178,7 +212,9 @@ export const Instruction = () => {
           </div>
         </div>
       </div>
-      <Button className="text-white bg-blue-600 rounded-xl" onClick={onReset}>Reset</Button>
+      <Button className="text-white bg-blue-600 rounded-xl" onClick={onReset}>
+        Reset
+      </Button>
     </div>
   );
 };
