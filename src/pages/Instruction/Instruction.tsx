@@ -11,6 +11,9 @@ import {
 import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import instructionText from "../../assets/instruction.txt?raw";
+import { amountNumberFormatter } from "@/utils/amountFormatter";
+
 const instructionKeys = {
   cuotasPartes: "cuotasPartes",
   clase: "clase",
@@ -48,9 +51,6 @@ const valueTransform = new Map<
     (value) => amountNumberFormatter({ amount: +value }),
   ],
 ]);
-
-import instructionText from "../../../public/instruction.txt?raw";
-import { amountNumberFormatter } from "@/utils/amountFormatter";
 
 export const Instruction = () => {
   const [params, setParams] = useState({
