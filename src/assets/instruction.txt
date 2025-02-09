@@ -2,7 +2,7 @@ Estimados,
 Muy buenos días/buenas tardes, favor de proceder a BLOQUEAR la cantidad de [N° CUOTASPARTES] cuotaspartes clase [CLASE A,B,C,D] del FCI [NOMBRE DEL FCI] de titularidad de [NOMBRE Y APELLIDO DEL CUOTAPARTISTA] CUIT [N° DE CUIT]
 
 Cálculo: [IMPORTE DE EMBARGO] / [VALOR DE CUOTAPARTE] = [CUOTASPARTES A BLOQUEAR]
-VCP al [FECHA] : [VALOR DE CUOTAPARTE]
+VCP al [FECHA] : [VALOR DE CUOTAPARTE CONVERTIDO]
 COTIZACION: [VALO DE COT]
 Desde ya, muchas gracias.
 Saludos

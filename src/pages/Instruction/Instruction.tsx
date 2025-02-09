@@ -100,6 +100,13 @@ export const Instruction = () => {
     if (!params?.rate) {
       auxText = auxText.replace("COTIZACION: [VALO DE COT]", '')
     }
+    if (params.valorCuotaParte) {
+      const regex = new RegExp(
+        `\\[VALOR DE CUOTAPARTE CONVERTIDO\\]`,
+        "g"
+      );
+      auxText = auxText.replace(regex, params.valorCuotaParte)
+    } 
     setReplacedInstruction(auxText);
   }, [params]);
 
